@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -35,6 +36,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -52,7 +55,7 @@ public class MapDemoActivity extends AppCompatActivity implements
 	private LocationRequest mLocationRequest;
 	private long UPDATE_INTERVAL = 60000;  /* 60 secs */
 	private long FASTEST_INTERVAL = 5000; /* 5 secs */
-
+	PolylineOptions rectOptions = new PolylineOptions();
 	/*
 	 * Define a request code to send to Google Play services This code is
 	 * returned in Activity.onActivityResult
@@ -322,8 +325,12 @@ public class MapDemoActivity extends AppCompatActivity implements
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// Define color of marker icon
-						BitmapDescriptor defaultMarker =
-								BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+					//	BitmapDescriptor defaultMarker =
+					//			BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+
+						BitmapDescriptor customMarker =
+								BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher);
+
 						// Extract content from alert dialog
 						String title = ((EditText) alertDialog.findViewById(R.id.etTitle)).
 								getText().toString();
@@ -334,10 +341,12 @@ public class MapDemoActivity extends AppCompatActivity implements
 								.position(point)
 								.title(title)
 								.snippet(snippet)
-								.icon(defaultMarker));
+								.icon(customMarker));
 						// Animate marker using drop effect
 						// --> Call the dropPinEffect method here
 						dropPinEffect(marker);
+
+
 					}
 				});
 
@@ -378,6 +387,9 @@ public class MapDemoActivity extends AppCompatActivity implements
 					// Post this event again 15ms from now.
 					handler.postDelayed(this, 15);
 				} else { // done elapsing, show window
+					rectOptions.add(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude))
+							.color(Color.RED);
+					map.addPolyline(rectOptions);
 					marker.showInfoWindow();
 				}
 			}
