@@ -70,6 +70,7 @@ public class MapDemoActivity extends AppCompatActivity implements
                 @Override
                 public void onMapReady(GoogleMap map) {
                     loadMap(map);
+					map.setInfoWindowAdapter(new CustomWindowAdapter(getLayoutInflater()));
                 }
             });
 		} else {
